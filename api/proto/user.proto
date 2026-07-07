@@ -1,0 +1,59 @@
+syntax = "proto3";
+
+package ecommerce.user.v1;
+
+option go_package = "github.com/ecommerce/api/proto/user/v1;userpb";
+
+service UserService {
+  rpc Register(RegisterRequest) returns (RegisterResponse);
+  rpc Login(LoginRequest) returns (LoginResponse);
+  rpc GetUser(GetUserRequest) returns (GetUserResponse);
+  rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse);
+}
+
+message User {
+  string id = 1;
+  string email = 2;
+  string name = 3;
+  string role = 4;
+  int64 created_at = 5;
+  int64 updated_at = 6;
+}
+
+message RegisterRequest {
+  string email = 1;
+  string password = 2;
+  string name = 3;
+}
+
+message RegisterResponse {
+  string id = 1;
+}
+
+message LoginRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message LoginResponse {
+  string token = 1;
+  User user = 2;
+}
+
+message GetUserRequest {
+  string id = 1;
+}
+
+message GetUserResponse {
+  User user = 1;
+}
+
+message UpdateUserRequest {
+  string id = 1;
+  string name = 2;
+  string email = 3;
+}
+
+message UpdateUserResponse {
+  User user = 1;
+}

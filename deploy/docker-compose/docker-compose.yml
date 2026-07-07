@@ -1,0 +1,147 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ecommerce
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api-gateway:
+    build:
+      context: ../../services/api-gateway
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      PORT: "8080"
+      USER_SERVICE_URL: http://user:8081
+      PRODUCT_SERVICE_URL: http://product:8082
+      ORDER_SERVICE_URL: http://order:8083
+      JWT_SECRET: super-secret-key
+    depends_on:
+      - user
+      - product
+      - order
+
+  user:
+    build:
+      context: ../../services/user
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    environment:
+      PORT: "8081"
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: user
+      JWT_SECRET: super-secret-key
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  product:
+    build:
+      context: ../../services/product
+      dockerfile: Dockerfile
+    ports:
+      - "8082:8082"
+    environment:
+      PORT: "8082"
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: product
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  order:
+    build:
+      context: ../../services/order
+      dockerfile: Dockerfile
+    ports:
+      - "8083:8083"
+    environment:
+      PORT: "8083"
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: order
+      BROKER_HOST: rabbitmq
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+  payment:
+    build:
+      context: ../../services/payment
+      dockerfile: Dockerfile
+    ports:
+      - "8084:8084"
+    environment:
+      PORT: "8084"
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: payment
+      BROKER_HOST: rabbitmq
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+  notification:
+    build:
+      context: ../../services/notification
+      dockerfile: Dockerfile
+    environment:
+      BROKER_HOST: rabbitmq
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
+volumes:
+  postgres_data:

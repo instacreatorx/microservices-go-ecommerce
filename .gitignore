@@ -1,0 +1,43 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+*.test.exe
+
+# Go
+*.exe
+*.o
+*.a
+*.so
+bin/
+vendor/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Docker
+docker-compose.override.yml
+
+# Logs
+*.log
+/logs/
+
+# Temporary
+tmp/
