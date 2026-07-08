@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/ecommerce/pkg/logger"
 	pkgmiddleware "github.com/ecommerce/pkg/middleware"
 	"go.uber.org/zap"
 )
