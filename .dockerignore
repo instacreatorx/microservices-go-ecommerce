@@ -1,0 +1,8 @@
+.git
+.gitignore
+.env
+*.md
+tmp/
+scripts/
+!services/*/migrations/
+deploy/

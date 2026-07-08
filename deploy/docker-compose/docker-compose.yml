@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   postgres:
     image: postgres:16-alpine
@@ -43,8 +41,8 @@ services:
 
   api-gateway:
     build:
-      context: ../../services/api-gateway
-      dockerfile: Dockerfile
+      context: ../..
+      dockerfile: services/api-gateway/Dockerfile
     ports:
       - "8080:8080"
     environment:
@@ -60,8 +58,8 @@ services:
 
   user:
     build:
-      context: ../../services/user
-      dockerfile: Dockerfile
+      context: ../..
+      dockerfile: services/user/Dockerfile
     ports:
       - "8081:8081"
     environment:
@@ -78,8 +76,8 @@ services:
 
   product:
     build:
-      context: ../../services/product
-      dockerfile: Dockerfile
+      context: ../..
+      dockerfile: services/product/Dockerfile
     ports:
       - "8082:8082"
     environment:
@@ -95,8 +93,8 @@ services:
 
   order:
     build:
-      context: ../../services/order
-      dockerfile: Dockerfile
+      context: ../..
+      dockerfile: services/order/Dockerfile
     ports:
       - "8083:8083"
     environment:
@@ -115,8 +113,8 @@ services:
 
   payment:
     build:
-      context: ../../services/payment
-      dockerfile: Dockerfile
+      context: ../..
+      dockerfile: services/payment/Dockerfile
     ports:
       - "8084:8084"
     environment:
@@ -135,8 +133,8 @@ services:
 
   notification:
     build:
-      context: ../../services/notification
-      dockerfile: Dockerfile
+      context: ../..
+      dockerfile: services/notification/Dockerfile
     environment:
       BROKER_HOST: rabbitmq
     depends_on:
