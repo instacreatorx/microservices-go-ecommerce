@@ -61,6 +61,15 @@ func (c RedisConfig) Addr() string {
 	return fmt.Sprintf("%s:%s", c.Host, c.Port)
 }
 
+func GetEnv(key, fallback string) string {
+	if value, ok := os.LookupEnv(key); ok {
+		return value
+	}
+	return fallback
+}
+
+var getEnv = GetEnv
+
 func Load(service string) *Config {
 	return &Config{
 		ServiceName: getEnv("SERVICE_NAME", service),
@@ -95,13 +104,6 @@ func Load(service string) *Config {
 			VHost:    getEnv("BROKER_VHOST", "/"),
 		},
 	}
-}
-
-func GetEnv(key, fallback string) string {
-	if value, ok := os.LookupEnv(key); ok {
-		return value
-	}
-	return fallback
 }
 
 func getEnvInt(key string, fallback int) int {
