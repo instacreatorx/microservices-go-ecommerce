@@ -11,7 +11,7 @@ import (
 	"github.com/ecommerce/pkg/config"
 	"github.com/ecommerce/pkg/database"
 	"github.com/ecommerce/pkg/logger"
-	"github.com/ecommerce/user/internal/delivery/http"
+	deliveryhttp "github.com/ecommerce/user/internal/delivery/http"
 	"github.com/ecommerce/user/internal/repository"
 	"github.com/ecommerce/user/internal/usecase"
 	"go.uber.org/zap"
@@ -31,7 +31,7 @@ func main() {
 
 	userRepo := repository.NewPostgresUserRepository(db.Pool)
 	userUC := usecase.NewUserUsecase(userRepo, cfg.JWT.Secret, cfg.JWT.Expiration)
-	handler := http.NewUserHandler(userUC)
+	handler := deliveryhttp.NewUserHandler(userUC)
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("POST /v1/auth/register", handler.Register)

@@ -9,7 +9,7 @@ import (
 	"syscall"
 
 	"github.com/ecommerce/order/internal/delivery/consumer"
-	"github.com/ecommerce/order/internal/delivery/http"
+	deliveryhttp "github.com/ecommerce/order/internal/delivery/http"
 	"github.com/ecommerce/order/internal/repository"
 	"github.com/ecommerce/order/internal/usecase"
 	"github.com/ecommerce/pkg/broker"
@@ -46,7 +46,7 @@ func main() {
 	paymentConsumer := consumer.NewPaymentConsumer(orderUC, rabbitMQ, logger)
 	go paymentConsumer.Start(ctx)
 
-	handler := http.NewOrderHandler(orderUC)
+	handler := deliveryhttp.NewOrderHandler(orderUC)
 	mux := http.NewServeMux()
 	mux.HandleFunc("POST /v1/orders", handler.Create)
 	mux.HandleFunc("GET /v1/orders", handler.List)

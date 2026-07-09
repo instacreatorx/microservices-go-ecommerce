@@ -6,16 +6,15 @@ import (
 	"github.com/ecommerce/api-gateway/internal/config"
 	"github.com/ecommerce/api-gateway/internal/handler"
 	"github.com/ecommerce/api-gateway/internal/middleware"
-	"github.com/ecommerce/pkg/logger"
 	"go.uber.org/zap"
 )
 
-func New(cfg *config.Config, logger *zap.Logger) http.Handler {
+func New(cfg *config.Config, log *zap.Logger) http.Handler {
 	mux := http.NewServeMux()
 
-	authHandler := handler.NewAuthHandler(cfg.UserServiceURL, logger)
-	productHandler := handler.NewProductHandler(cfg.ProductServiceURL, logger)
-	orderHandler := handler.NewOrderHandler(cfg.OrderServiceURL, logger)
+	authHandler := handler.NewAuthHandler(cfg.UserServiceURL, log)
+	productHandler := handler.NewProductHandler(cfg.ProductServiceURL, log)
+	orderHandler := handler.NewOrderHandler(cfg.OrderServiceURL, log)
 
 	authMW := middleware.NewAuthMiddleware(cfg.JWT.Secret)
 
@@ -29,5 +28,5 @@ func New(cfg *config.Config, logger *zap.Logger) http.Handler {
 	mux.Handle("GET /v1/orders", authMW.Wrap(orderHandler.List))
 	mux.Handle("GET /v1/orders/{id}", authMW.Wrap(orderHandler.GetByID))
 
-	return middleware.Chain(mux, logger)
+	return middleware.Chain(mux, log)
 }

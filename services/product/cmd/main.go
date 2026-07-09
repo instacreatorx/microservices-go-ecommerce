@@ -11,7 +11,7 @@ import (
 	"github.com/ecommerce/pkg/config"
 	"github.com/ecommerce/pkg/database"
 	"github.com/ecommerce/pkg/logger"
-	"github.com/ecommerce/product/internal/delivery/http"
+	deliveryhttp "github.com/ecommerce/product/internal/delivery/http"
 	"github.com/ecommerce/product/internal/repository"
 	"github.com/ecommerce/product/internal/usecase"
 	"go.uber.org/zap"
@@ -31,7 +31,7 @@ func main() {
 
 	productRepo := repository.NewPostgresProductRepository(db.Pool)
 	productUC := usecase.NewProductUsecase(productRepo)
-	handler := http.NewProductHandler(productUC)
+	handler := deliveryhttp.NewProductHandler(productUC)
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("POST /v1/products", handler.Create)
